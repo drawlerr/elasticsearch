@@ -54,17 +54,17 @@ public class SearchBenchmarkTask implements BenchmarkTask {
     }
 
     private void runIterations(int iterations, boolean addSample) {
-        long interval = TimeUnit.SECONDS.toNanos(1L) / targetThroughput;
+        long interval = TimeUnit.SECONDS.toMillis(1L) / targetThroughput;
 
-        long totalStart = System.nanoTime();
+        long totalStart = System.currentTimeMillis();
         for (int iteration = 0; iteration < iterations; iteration++) {
             long expectedStart = totalStart + iteration * interval;
-            while (System.nanoTime() < expectedStart) {
+            while (System.currentTimeMillis() < expectedStart) {
                 // busy spin
             }
-            long start = System.nanoTime();
+            long start = System.currentTimeMillis();
             boolean success = searchRequestExecutor.search(searchRequestBody);
-            long stop = System.nanoTime();
+            long stop = System.currentTimeMillis();
             if (addSample) {
                 sampleRecorder.addSample(new Sample("search", expectedStart, start, stop, success));
             }
